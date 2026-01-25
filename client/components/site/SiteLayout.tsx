@@ -58,6 +58,12 @@ export function SiteFooter() {
               </li>
               <li className="text-[var(--color-border)]">|</li>
               <li>
+                <Link className="hover:text-[var(--color-link)] transition-colors" to="/shipping-policy">
+                  Shipping Policy
+                </Link>
+              </li>
+              <li className="text-[var(--color-border)]">|</li>
+              <li>
                 <Link className="hover:text-[var(--color-link)] transition-colors" to="/privacy-policy">
                   Privacy Policy
                 </Link>

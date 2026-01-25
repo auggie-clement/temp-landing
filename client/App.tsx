@@ -9,7 +9,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import PlaceholderPage from "./pages/Placeholder";
+import RefundPolicy from "./pages/RefundPolicy";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
+import ShippingPolicy from "./pages/ShippingPolicy";
+import Contact from "./pages/Contact";
 
 const queryClient = new QueryClient();
 
@@ -32,7 +36,7 @@ const App = () => (
             path="/refund-policy"
             element={
               <SiteLayout>
-                <PlaceholderPage title="Refund Policy" />
+                <RefundPolicy />
               </SiteLayout>
             }
           />
@@ -40,7 +44,15 @@ const App = () => (
             path="/privacy-policy"
             element={
               <SiteLayout>
-                <PlaceholderPage title="Privacy Policy" />
+                <PrivacyPolicy />
+              </SiteLayout>
+            }
+          />
+          <Route
+            path="/shipping-policy"
+            element={
+              <SiteLayout>
+                <ShippingPolicy />
               </SiteLayout>
             }
           />
@@ -48,7 +60,7 @@ const App = () => (
             path="/terms-of-service"
             element={
               <SiteLayout>
-                <PlaceholderPage title="Terms of Service" />
+                <TermsOfService />
               </SiteLayout>
             }
           />
@@ -56,7 +68,7 @@ const App = () => (
             path="/contact"
             element={
               <SiteLayout>
-                <PlaceholderPage title="Contact" />
+                <Contact />
               </SiteLayout>
             }
           />
