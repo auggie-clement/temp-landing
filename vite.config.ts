@@ -13,6 +13,9 @@ export default defineConfig(({ mode }) => ({
       deny: [".env", ".env.*", "*.{crt,pem}", "**/.git/**", "server/**"],
     },
   },
+  preview: {
+    allowedHosts: ["thehonestherbalist.com"],
+  },
   build: {
     outDir: "dist/spa",
   },
