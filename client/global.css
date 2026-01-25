@@ -1,0 +1,466 @@
+/** @import must precede all other statements */
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /*
+    Design Tokens — Health Brand (Accessible / Older Audience)
+    ---------------------------------------------------------
+    Goals:
+    - Neutral, standard text colors (near-black) for readability
+    - Green used for actions/accents, not body copy
+    - WCAG-friendly contrast defaults and strong focus indicators
+  */
+
+  :root {
+    /* Typography (larger defaults for readability) */
+    --font-sans: 'DM Sans', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+      Arial, 'Apple Color Emoji', 'Segoe UI Emoji';
+    --font-heading: 'DM Sans', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+      Arial, 'Apple Color Emoji', 'Segoe UI Emoji';
+    --font-cta: 'DM Sans', Arial, sans-serif;
+
+    /* Minimum comfortable sizes (avoid tiny secondary text) */
+    --text-sm: 20px;
+    --text-base: 22px;
+    --text-lg: 26px;
+
+    --h1: clamp(40px, 6vw, 64px);
+    --h2: clamp(34px, 5vw, 52px);
+    --h3: 26px;
+
+    /* More leading helps older readers */
+    --line: 1.8;
+    --heading-size: clamp(34px, 4.5vw, 48px);
+    --heading-size-mobile: clamp(30px, 4.5vw, 38px);
+    --heading-line: 1.2;
+    --heading-weight: 600;
+
+    /* Color system (text is neutral, accents are green/blue) */
+    --color-page-bg: #ffffff;
+    --color-bg: #ffffff;
+
+    /* Standard text colors */
+    --color-text: #1b1b1b;      /* near-black */
+    --color-muted: #3a3a3a;     /* still high contrast */
+    --color-heading: #121212;
+
+    /* Brand / accents (use for buttons, icons, highlights — not paragraphs) */
+    --color-brand: #0b7a3c;     /* primary green */
+    --color-link: #0b5fff;      /* standard-ish accessible blue */
+    --color-accent: var(--color-brand);
+
+    /* Borders: separate “decorative” vs “control” borders
+       - Use --color-control-border for inputs/buttons to help meet non-text contrast needs */
+    --color-border: #e2e8f0;
+    --color-control-border: #6b7a72;
+
+    --color-soft: #f8fafc;
+    --color-soft-2: rgba(11, 95, 255, 0.10);
+
+    /* Focus (strong, obvious) */
+    --focus-outline-color: var(--color-link);
+    --focus-outline-color-soft: rgba(11, 95, 255, 0.35);
+    --focus-outline: 3px solid var(--focus-outline-color);
+    --focus-outline-soft: 3px solid var(--focus-outline-color-soft);
+    --focus-outline-offset: 2px;
+
+    /* CTA Colors (white text on darker green for contrast) */
+    --color-cta: #0b7a3c;
+    --color-cta-text: #ffffff;
+    --color-cta-shell: #ffffff;
+    --color-cta-icon: #064f27;
+
+    /* Layout */
+    --container-max: 1120px; /* slightly narrower: better line length */
+    --container-pad: 24px;
+    --section-pad-y: 84px;
+
+    /* Spacing */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 24px;
+    --space-6: 32px;
+    --space-7: 48px;
+    --space-8: 64px;
+
+    /* Radius & Shadow */
+    --radius-sm: 12px;
+    --radius-md: 16px;
+    --radius-lg: 22px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+
+    /* Hero */
+    --hero-bg: #ffffff;
+    --hero-min-height: 540px;
+    --hero-pad-x: clamp(24px, 6vw, 92px);
+    --hero-pad-y: clamp(32px, 5vw, 72px);
+    --hero-title-max: 22ch;          /* helps reading rhythm */
+    --hero-subtitle-max: 52ch;
+
+    --hero-title-size: var(--heading-size);
+    --hero-title-weight: var(--heading-weight);
+    --hero-title-line: 1.08;
+
+    --hero-subtitle-size: clamp(22px, 2.5vw, 28px);
+    --hero-subtitle-weight: 400;
+    --hero-subtitle-line: 1.35;
+    --hero-subtitle-gap: 18px;
+
+    --hero-media-placeholder-bg: rgba(0, 0, 0, 0.06);
+
+    /* Badge strip */
+    --badge-strip-bg: #ffffff;
+    --badge-strip-border: 1px solid var(--color-border);
+    --badge-strip-pad-y: clamp(30px, 4vw, 40px);
+    --badge-strip-gap: clamp(22px, 4vw, 64px);
+
+    --badge-icon-size: 60px;
+    --badge-text-color: var(--color-heading);
+    --badge-text-weight: 800;
+    --badge-value-size: clamp(16px, 2.1vw, 28px);
+    --badge-label-size: clamp(16px, 2.1vw, 22px);
+    --badge-text-size: var(--badge-label-size);
+    --badge-letter-spacing: 0.01em;
+
+    /* Marquee */
+    --marquee-height: clamp(58px, 7vw, 72px);
+    --marquee-speed: 50s;
+    --marquee-bg: #f8fafc;
+    --marquee-border: var(--color-border);
+    --marquee-text: var(--color-heading);
+    --marquee-font-size: clamp(20px, 3.2vw, 30px);
+    --marquee-font-weight: 800;
+    --marquee-letter-spacing: 0.01em;
+    --marquee-gap: 1rem;
+    --marquee-pad-x: 0px;
+
+    /* Listicle */
+    --listicle-card-gap: 40px;
+    --listicle-card-radius: 10px;
+    --listicle-card-border: 1px solid var(--color-border);
+
+    --listicle-media-width: 320px;
+    --listicle-media-min-height: 300px;
+    --listicle-media-min-height-mobile: 220px;
+    --listicle-media-placeholder-bg: rgba(11, 122, 60, 0.10);
+
+    --listicle-number-size: 54px;
+    --listicle-number-offset: 16px;
+    --listicle-number-bg: var(--color-brand);
+    --listicle-number-fg: #ffffff;
+    --listicle-number-font-size: 32px;
+
+    --listicle-content-pad-x: 40px;
+    --listicle-content-pad-y: 42px;
+    --listicle-content-pad-x-mobile: 20px;
+    --listicle-content-pad-y-mobile: 32px;
+
+    --listicle-title-size: var(--heading-size);
+    --listicle-title-size-mobile: var(--heading-size-mobile);
+    --listicle-title-line: var(--heading-line);
+
+    --listicle-body-size: clamp(20px, 2.5vw, 24px);
+    --listicle-body-line: 1.7;
+    --listicle-body-gap: 18px;
+
+    /* Reviews carousel */
+    --reviews-pad-y: 68px;
+    --reviews-gap: 34px;
+    --reviews-height: 460px;
+    --reviews-card-width: 480px;
+    --reviews-card-radius: 28px;
+    --reviews-card-bg: #f5f7f6;
+    --reviews-card-pad: 46px 44px 38px;
+
+    --reviews-quote-size: 56px;
+    --reviews-quote-color: rgba(0, 0, 0, 0.35);
+    --reviews-quote-top: 18px;
+    --reviews-quote-left: 34px;
+    --reviews-stars-top: 22px;
+
+    --reviews-star-size: 22px;
+    --reviews-star-color: #f59a3b;
+
+    --reviews-text-size: 22px;
+    --reviews-text-line: 1.6;
+    --reviews-text-color: var(--color-text);
+
+    --reviews-author-color: var(--color-heading);
+    --reviews-verified-bg: rgba(0, 0, 0, 0.08);
+    --reviews-verified-border: 0;
+    --reviews-verified-color: var(--color-text);
+
+    --reviews-media-main-width: 1fr;
+    --reviews-media-slim-width: 140px;
+    --reviews-media-gap: 16px;
+    --reviews-media-radius: 18px;
+    --reviews-media-placeholder-bg: rgba(0, 0, 0, 0.06);
+
+    --reviews-nav-size: 44px; /* larger tap target */
+    --reviews-nav-offset: 10px;
+    --reviews-nav-bg: #ffffff;
+    --reviews-nav-border: 2px solid var(--color-control-border);
+    --reviews-nav-color: var(--color-heading);
+    --reviews-nav-shadow: 0 10px 22px rgba(0, 0, 0, 0.14);
+
+    --reviews-dots-top: 18px;
+    --reviews-dot-gap: 10px;
+    --reviews-dot-size: 8px;
+    --reviews-dot-bg: rgba(0, 0, 0, 0.20);
+    --reviews-dot-active-width: 28px;
+    --reviews-dot-active-bg: var(--color-brand);
+
+    /* Pitch */
+    --pitch-bg: var(--hero-bg);
+    --pitch-pad-y: 84px;
+    --pitch-gap: 64px;
+    --pitch-content-max: 600px;
+
+    --pitch-title-size: var(--heading-size);
+    --pitch-title-line: var(--heading-line);
+    --pitch-title-color: var(--color-heading);
+
+    --pitch-bullets-top: 28px;
+    --pitch-bullets-bottom: 30px;
+    --pitch-bullet-gap: 18px;
+    --pitch-bullet-size: 18px;
+    --pitch-bullet-line: 1.6;
+    --pitch-bullet-strong-weight: 700;
+    --pitch-text-color: var(--color-text);
+
+    --pitch-check-size: 24px;
+    --pitch-check-gap: 14px;
+    --pitch-check-bg: transparent;
+    --pitch-check-border: 2px solid var(--color-brand);
+    --pitch-check-icon-size: 14px;
+    --pitch-check-color: var(--color-brand);
+
+    --pitch-media-max: 560px;
+    --pitch-media-radius: 10px;
+    --pitch-media-border: 2px solid var(--color-control-border);
+    --pitch-media-bg: rgba(255, 255, 255, 0.70);
+    --pitch-media-shadow: 0 18px 42px rgba(0, 0, 0, 0.12);
+
+    /* CTA sizing (bigger targets) */
+    --cta-shell-pad: 10px;
+    --cta-shell-shadow: 0 16px 44px rgba(0, 0, 0, 0.16);
+
+    --cta-height-lg: 80px;
+    --cta-height-md: 72px;
+    --cta-height-sm: 64px;
+
+    --cta-min-width-lg: 480px;
+    --cta-min-width-md: 400px;
+    --cta-min-width-sm: 0;
+
+    --cta-pad-x-lg: clamp(24px, 5vw, 40px);
+    --cta-pad-x-md: 36px;
+    --cta-pad-x-sm: 28px;
+
+    --cta-font-size-lg: clamp(18px, 4vw, 22px);
+    --cta-font-size-md: 20px;
+    --cta-font-size-sm: 18px;
+
+    --cta-letter-spacing: 0.02em; /* less “shouty” than 0.06 */
+    --cta-font-weight: 800;
+
+    --cta-circle-size-lg: 42px;
+    --cta-circle-size-md: 40px;
+    --cta-circle-size-sm: 36px;
+
+    --cta-icon-size-lg: 18px;
+    --cta-icon-size-md: 18px;
+    --cta-icon-size-sm: 16px;
+
+    /* Footer */
+    --footer-bg: var(--hero-bg);
+    --footer-border: 1px solid var(--color-border);
+    --footer-pad-y: 52px;
+    --footer-logo-height: 54px;
+    --footer-gap: 18px;
+
+    /* Floating CTA */
+    --floating-cta-bottom: 18px;
+    --floating-cta-z: 50;
+
+    /* Optional utility targets */
+    --tap-target-min: 44px; /* comfort target (exceeds WCAG minimum) */
+
+    /* Map to Tailwind generic variables for shadcn/ui components */
+    --background: 144 33% 98%; /* #f7fbf8 approx */
+    --foreground: 0 0% 11%; /* #1b1b1b approx */
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 11%;
+
+    --primary: 144 83% 26%; /* #0b7a3c approx */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 221 100% 53%; /* #0b5fff approx */
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 0 0% 23%; /* #3a3a3a approx */
+    --muted-opacity: 1;
+
+    --accent: 144 83% 26%;
+    --accent-opacity: 0.08;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 144 14% 86%; /* #d6e0da approx */
+    --border-opacity: 1;
+    
+    --input: 144 5% 44%; /* #6b7a72 approx */
+    --input-opacity: 1;
+    
+    --ring: 221 100% 53%;
+
+    --radius: 1.375rem; /* 22px approx */
+  }
+
+  :root[data-theme='dark'] {
+    --color-page-bg: #08130f;
+    --color-bg: #0b1713;
+
+    --color-text: #f6fbf8;
+    --color-muted: #c9d3ce;
+    --color-heading: #ffffff;
+
+    --color-border: rgba(246, 251, 248, 0.18);
+    --color-control-border: #71817a;
+
+    --color-soft: rgba(246, 251, 248, 0.08);
+
+    --hero-bg: #0a1c16;
+    --pitch-bg: var(--hero-bg);
+    --badge-strip-bg: var(--hero-bg);
+    --marquee-bg: #0a2018;
+
+    --reviews-card-bg: #0c211a;
+
+    --focus-outline-color: #8ccbff;
+    --focus-outline-color-soft: rgba(140, 203, 255, 0.35);
+
+    --shadow-sm: 0 2px 18px rgba(0, 0, 0, 0.55);
+
+    --background: 164 42% 5%;
+    --foreground: 144 33% 97%;
+    --card: 164 42% 8%;
+    --card-foreground: 144 33% 97%;
+    --primary: 144 83% 26%;
+    --primary-foreground: 144 33% 97%;
+  }
+}
+
+@layer components {
+  .marquee-container {
+    height: var(--marquee-height);
+    background: var(--marquee-bg);
+    border-top: 1px solid var(--marquee-border);
+    border-bottom: 1px solid var(--marquee-border);
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .marquee-content {
+    display: flex;
+    gap: var(--marquee-gap);
+    animation: marquee var(--marquee-speed) linear infinite;
+    white-space: nowrap;
+    padding-left: var(--marquee-pad-x);
+  }
+
+  .badge-strip {
+    background: var(--badge-strip-bg);
+    border-top: var(--badge-strip-border);
+    border-bottom: var(--badge-strip-border);
+    padding: var(--badge-strip-pad-y) 0;
+  }
+
+  .cta-primary {
+    min-height: var(--cta-height-lg);
+    height: auto;
+    min-width: var(--cta-min-width-sm);
+    padding: 16px var(--cta-pad-x-lg);
+    background: var(--color-cta);
+    color: var(--color-cta-text);
+    font-size: var(--cta-font-size-lg);
+    font-weight: var(--cta-font-weight);
+    letter-spacing: var(--cta-letter-spacing);
+    border-radius: var(--cta-radius, 100px);
+    box-shadow: var(--cta-shadow, none);
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    font-family: var(--font-cta);
+    outline: none;
+    white-space: normal;
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  .cta-primary:focus-visible {
+    outline: var(--focus-outline);
+    outline-offset: var(--focus-outline-offset);
+  }
+
+  .cta-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+    opacity: 0.95;
+  }
+
+  .cta-primary:active {
+    transform: translateY(0);
+  }
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  *:focus-visible {
+    outline: var(--focus-outline);
+    outline-offset: var(--focus-outline-offset);
+  }
+
+  body {
+    background-color: var(--color-page-bg);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    line-height: var(--line);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: var(--heading-weight);
+    line-height: var(--heading-line);
+    color: var(--color-heading);
+  }
+
+  :where(p, span, li, a, button, label, td, th) {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+}

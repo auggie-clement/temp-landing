@@ -1,0 +1,79 @@
+import "./global.css";
+
+import { Toaster } from "@/components/ui/toaster";
+import { createRoot } from "react-dom/client";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { SiteLayout } from "@/components/site/SiteLayout";
+import Index from "./pages/Index";
+import NotFound from "./pages/NotFound";
+import PlaceholderPage from "./pages/Placeholder";
+
+const queryClient = new QueryClient();
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <BrowserRouter>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <SiteLayout>
+                <Index />
+              </SiteLayout>
+            }
+          />
+          <Route
+            path="/refund-policy"
+            element={
+              <SiteLayout>
+                <PlaceholderPage title="Refund Policy" />
+              </SiteLayout>
+            }
+          />
+          <Route
+            path="/privacy-policy"
+            element={
+              <SiteLayout>
+                <PlaceholderPage title="Privacy Policy" />
+              </SiteLayout>
+            }
+          />
+          <Route
+            path="/terms-of-service"
+            element={
+              <SiteLayout>
+                <PlaceholderPage title="Terms of Service" />
+              </SiteLayout>
+            }
+          />
+          <Route
+            path="/contact"
+            element={
+              <SiteLayout>
+                <PlaceholderPage title="Contact" />
+              </SiteLayout>
+            }
+          />
+
+          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route
+            path="*"
+            element={
+              <SiteLayout>
+                <NotFound />
+              </SiteLayout>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </TooltipProvider>
+  </QueryClientProvider>
+);
+
+createRoot(document.getElementById("root")!).render(<App />);
