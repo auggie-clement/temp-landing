@@ -14,6 +14,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import ShippingPolicy from "./pages/ShippingPolicy";
 import Contact from "./pages/Contact";
+import ThankYou from "./pages/ThankYou";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +38,14 @@ const App = () => (
             element={
               <SiteLayout>
                 <RefundPolicy />
+              </SiteLayout>
+            }
+          />
+          <Route
+            path="/thank-you"
+            element={
+              <SiteLayout>
+                <ThankYou />
               </SiteLayout>
             }
           />

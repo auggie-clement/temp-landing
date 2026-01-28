@@ -23,7 +23,7 @@ import {
   Utensils,
   Zap,
 } from "lucide-react";
-import type { FormEvent, ReactNode } from "react";
+import type { FormEvent, MouseEvent, ReactNode } from "react";
 import { useCallback, useMemo, useState, useEffect } from "react";
 
 import {
@@ -189,7 +189,7 @@ function StickyPurchaseBar({ onCta }: { onCta: () => void }) {
           <button
             type="button"
             onClick={onCta}
-            className="w-full rounded-xl bg-brand-700 py-4 text-[18px] sm:text-[20px] font-black tracking-widest text-white shadow-btn hover:bg-brand-700/90 transition-all active:translate-y-1 active:shadow-none border border-transparent uppercase shrink-0 font-heading"
+            className="w-full flex items-center justify-center rounded-xl bg-brand-700 py-4 text-[18px] sm:text-[20px] font-black tracking-widest text-white shadow-btn hover:bg-brand-700/90 transition-all active:translate-y-1 active:shadow-none border border-transparent uppercase shrink-0 font-heading"
           >
             GET YOUR BOOK NOW →
           </button>
@@ -318,6 +318,7 @@ export default function Index() {
   const [bundleEmail, setBundleEmail] = useState("");
   const [bundleFirstName, setBundleFirstName] = useState("");
   const [bundleLastName, setBundleLastName] = useState("");
+  const checkoutUrl = "https://buy.stripe.com/dRm6ozdtHc5h9v9aYnbAs00";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -336,10 +337,6 @@ export default function Index() {
     });
   }, []);
 
-  const openBundleModal = useCallback(() => {
-    setIsBundleModalOpen(true);
-  }, []);
-
   const handleBundleModalChange = useCallback((open: boolean) => {
     setIsBundleModalOpen(open);
     if (!open) {
@@ -356,6 +353,27 @@ export default function Index() {
       setBundleSubmitted(true);
     },
     [],
+  );
+
+  const handleOfferCtaClick = useCallback(() => {
+    scrollToOffer();
+  }, [scrollToOffer]);
+
+  const handleStripeCheckoutClick = useCallback(
+    (event: MouseEvent<HTMLAnchorElement>) => {
+      event.preventDefault();
+      const fbq = (window as { fbq?: (...args: unknown[]) => void }).fbq;
+
+      if (typeof fbq === "function") {
+        fbq("track", "InitiateCheckout");
+        window.setTimeout(() => {
+          window.location.href = checkoutUrl;
+        }, 200);
+      } else {
+        window.location.href = checkoutUrl;
+      }
+    },
+    [checkoutUrl],
   );
 
   const faqs = useMemo(
@@ -954,7 +972,7 @@ export default function Index() {
               </div>
 
               <div className="mt-6">
-                <PrimaryCTA onClick={scrollToOffer}>
+                <PrimaryCTA onClick={handleOfferCtaClick}>
                   GET THE HONEST HERBALIST HANDBOOK TODAY →
                 </PrimaryCTA>
               </div>
@@ -1125,7 +1143,7 @@ export default function Index() {
             </div>
 
             <div className="mt-16 text-center">
-              <PrimaryCTA onClick={scrollToOffer} className="px-12">
+              <PrimaryCTA onClick={handleOfferCtaClick} className="px-12">
                 GET THE HONEST HERBALIST HANDBOOK TODAY →
               </PrimaryCTA>
             </div>
@@ -1223,12 +1241,13 @@ export default function Index() {
                     </div>
 
                     <div className="mt-12 space-y-6">
-                      <PrimaryCTA
-                        onClick={openBundleModal}
-                        className="w-full"
+                      <a
+                        href={checkoutUrl}
+                        onClick={handleStripeCheckoutClick}
+                        className="cta-primary w-full"
                       >
                         GET THE HONEST HERBALIST HANDBOOK TODAY →
-                      </PrimaryCTA>
+                      </a>
 
                       <div className="flex flex-col items-center gap-6">
                         <div className="text-[16px] text-muted-foreground uppercase tracking-[0.2em] font-bold">Secure checkout</div>
@@ -1333,9 +1352,13 @@ export default function Index() {
               <div className="mt-8">
                 <div className="text-[24px] font-extrabold text-[var(--color-heading)]">Ready to Stop Guessing?</div>
                 <div className="mt-4">
-                  <PrimaryCTA onClick={scrollToOffer}>
+                  <a
+                    href={checkoutUrl}
+                    onClick={handleStripeCheckoutClick}
+                    className="cta-primary"
+                  >
                     GET THE HONEST HERBALIST HANDBOOK TODAY →
-                  </PrimaryCTA>
+                  </a>
                 </div>
                 <div className="mt-6 flex flex-wrap items-center justify-center gap-6 text-[18px] text-muted-foreground">
                   <div className="flex items-center gap-2">
@@ -1414,7 +1437,7 @@ export default function Index() {
         </DialogContent>
       </Dialog>
 
-      {showStickyBar && <StickyPurchaseBar onCta={scrollToOffer} />}
+      {showStickyBar && <StickyPurchaseBar onCta={handleOfferCtaClick} />}
     </>
   );
 }
