@@ -15,6 +15,7 @@ import TermsOfService from "./pages/TermsOfService";
 import ShippingPolicy from "./pages/ShippingPolicy";
 import Contact from "./pages/Contact";
 import ThankYou from "./pages/ThankYou";
+import MetaPixelRouteTracker from "./components/MetaPixelRouteTracker";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <MetaPixelRouteTracker />
         <Routes>
           <Route
             path="/"

@@ -50,6 +50,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { trackInitiateCheckout } from "@/lib/metaPixel";
 
 function ImagePlaceholder({
   className,
@@ -165,14 +166,22 @@ function CardFeature({
   );
 }
 
-function CheckLine({ title, description }: { title: string; description: ReactNode }) {
+function CheckLine({
+  title,
+  description,
+}: {
+  title: string;
+  description: ReactNode;
+}) {
   return (
     <div className="flex gap-6 group">
       <div className="mt-1 h-9 w-9 rounded-full bg-slate-50 flex items-center justify-center text-brand-700 shrink-0 group-hover:bg-brand-700 group-hover:text-white transition-colors duration-300">
         <Check className="h-5 w-5 stroke-[3]" />
       </div>
       <div>
-        <div className="text-[24px] font-bold text-[var(--color-heading)] font-heading leading-tight">{title}</div>
+        <div className="text-[24px] font-bold text-[var(--color-heading)] font-heading leading-tight">
+          {title}
+        </div>
         <div className="mt-3 text-[20px] leading-[var(--line)] text-[var(--color-muted)] font-medium">
           {description}
         </div>
@@ -198,9 +207,7 @@ function StickyPurchaseBar({ onCta }: { onCta: () => void }) {
               <span className="text-[14px]">🎉</span>
               <span>61% OFF + 3 FREE GIFTS</span>
             </div>
-            <div className="text-[#8B4513]">
-              VERIFIED LOWEST PRICE EVER
-            </div>
+            <div className="text-[#8B4513]">VERIFIED LOWEST PRICE EVER</div>
           </div>
         </div>
       </div>
@@ -238,13 +245,21 @@ function StockLevels() {
 
   // Calculate current month progress: 18% on day 1, incrementing daily to 87% by end of month
   const currentDay = now.getDate();
-  const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  const daysInMonth = new Date(
+    now.getFullYear(),
+    now.getMonth() + 1,
+    0,
+  ).getDate();
   const startProgress = 18;
   const endProgress = 87;
-  const progressPercentage = startProgress + ((currentDay - 1) / (daysInMonth - 1)) * (endProgress - startProgress);
+  const progressPercentage =
+    startProgress +
+    ((currentDay - 1) / (daysInMonth - 1)) * (endProgress - startProgress);
 
   // Calculate approximate number sold based on percentage
-  const currentMonthSold = Math.round((progressPercentage / 100) * currentMonthTotal);
+  const currentMonthSold = Math.round(
+    (progressPercentage / 100) * currentMonthTotal,
+  );
 
   return (
     <div className="space-y-4">
@@ -267,7 +282,9 @@ function StockLevels() {
             {currentMonthName}
           </div>
           <div className="text-[14px] sm:text-[16px] text-gray-700 font-semibold">
-            {Math.round(progressPercentage)}% Sold ({currentMonthSold.toLocaleString()} of {currentMonthTotal.toLocaleString()})
+            {Math.round(progressPercentage)}% Sold (
+            {currentMonthSold.toLocaleString()} of{" "}
+            {currentMonthTotal.toLocaleString()})
           </div>
         </div>
         {/* Progress Bar */}
@@ -287,7 +304,10 @@ function BadgeStrip() {
     { icon: <Ruler className="h-6 w-6" />, label: "Precise Dosages" },
     { icon: <BadgeCheck className="h-6 w-6" />, label: "Proven Methods" },
     { icon: <ShieldCheck className="h-6 w-6" />, label: "Safety Flagged" },
-    { icon: <Stethoscope className="h-6 w-6" />, label: "Clinically Developed" },
+    {
+      icon: <Stethoscope className="h-6 w-6" />,
+      label: "Clinically Developed",
+    },
     { icon: <Flame className="h-6 w-6" />, label: "Potency Preserved" },
   ];
 
@@ -362,16 +382,7 @@ export default function Index() {
   const handleStripeCheckoutClick = useCallback(
     (event: MouseEvent<HTMLAnchorElement>) => {
       event.preventDefault();
-      const fbq = (window as { fbq?: (...args: unknown[]) => void }).fbq;
-
-      if (typeof fbq === "function") {
-        fbq("track", "InitiateCheckout");
-        window.setTimeout(() => {
-          window.location.href = checkoutUrl;
-        }, 200);
-      } else {
-        window.location.href = checkoutUrl;
-      }
+      trackInitiateCheckout({ value: 49.0, currency: "USD", num_items: 1 });
     },
     [checkoutUrl],
   );
@@ -480,11 +491,18 @@ export default function Index() {
 
                 <p className="text-[20px] sm:text-[var(--hero-subtitle-size)] leading-[var(--hero-subtitle-line)] text-[var(--color-text)] mb-12 font-[var(--hero-subtitle-weight)] max-w-[var(--hero-subtitle-max)]">
                   One dosing mistake can turn a kitchen remedy into a nightmare.
-                  <span className="text-black font-bold"> This handbook finally tells you how much, how often, and when to stop.</span>
+                  <span className="text-black font-bold">
+                    {" "}
+                    This handbook finally tells you how much, how often, and
+                    when to stop.
+                  </span>
                 </p>
 
                 <div className="mb-6">
-                  <PrimaryCTA onClick={scrollToOffer} className="w-full sm:w-auto">
+                  <PrimaryCTA
+                    onClick={scrollToOffer}
+                    className="w-full sm:w-auto"
+                  >
                     YES! I WANT THE REAL DOSAGES →
                   </PrimaryCTA>
                   <div className="mt-6 flex items-center gap-3 text-[12px] text-brand-900/50 font-black uppercase tracking-widest">
@@ -505,7 +523,10 @@ export default function Index() {
                       </div>
                       <div className="flex-1">
                         <p className="text-[16px] sm:text-[18px] font-bold text-gray-900">
-                          We are selling out more than expected. <span className="text-red-600">Order now before we run out again.</span>
+                          We are selling out more than expected.{" "}
+                          <span className="text-red-600">
+                            Order now before we run out again.
+                          </span>
                         </p>
                       </div>
                     </div>
@@ -523,7 +544,10 @@ export default function Index() {
         <section className="marquee-container">
           <div className="marquee-content">
             {Array.from({ length: 10 }).map((_, i) => (
-              <span key={i} className="flex items-center gap-4 text-[var(--marquee-text)] font-[var(--marquee-font-weight)] text-[var(--marquee-font-size)] uppercase tracking-[var(--marquee-letter-spacing)]">
+              <span
+                key={i}
+                className="flex items-center gap-4 text-[var(--marquee-text)] font-[var(--marquee-font-weight)] text-[var(--marquee-font-size)] uppercase tracking-[var(--marquee-letter-spacing)]"
+              >
                 <span>Precise Dosages</span>
                 <span className="h-2 w-2 rounded-full bg-[var(--color-accent)]" />
                 <span>Proven Methods</span>
@@ -553,26 +577,55 @@ export default function Index() {
                 </div>
                 <div>
                   <h2 className="text-3xl sm:text-[var(--heading-size)] font-bold tracking-tight font-heading leading-[var(--heading-line)] text-[var(--color-heading)]">
-                    Meet Dr. Elara Vance <span className="font-serif italic font-normal text-[0.8em] block sm:inline sm:ml-2">Clinical Herbalist — 25 Years in Practice</span>
+                    Meet Dr. Elara Vance{" "}
+                    <span className="font-serif italic font-normal text-[0.8em] block sm:inline sm:ml-2">
+                      Clinical Herbalist — 25 Years in Practice
+                    </span>
                   </h2>
                   <div className="mt-8 space-y-6 text-[18px] leading-relaxed text-[var(--color-muted)]">
                     <p>
-                      After two decades in her Vermont clinic, Dr. Vance noticed a pattern. Patients weren't failing with herbs — they were failing with <span className="italic">guidance</span>.
+                      After two decades in her Vermont clinic, Dr. Vance noticed
+                      a pattern. Patients weren't failing with herbs — they were
+                      failing with <span className="italic">guidance</span>.
                     </p>
                     <p>
-                      The same story, over and over: Someone tried a remedy they found online. It didn't work — or worse, it clashed with a medication no one warned them about. They felt stupid. They gave up. And they stopped trusting natural options entirely.
+                      The same story, over and over: Someone tried a remedy they
+                      found online. It didn't work — or worse, it clashed with a
+                      medication no one warned them about. They felt stupid.
+                      They gave up. And they stopped trusting natural options
+                      entirely.
                     </p>
                     <p>
-                      She called it <strong className="text-[var(--color-heading)]">The Trust Gap Spiral</strong>. Conflicting advice leads to blind experimentation. Blind experimentation leads to harm or disappointment. And careful people — the ones who <span className="italic">should</span> be using these tools — walk away empty-handed.
+                      She called it{" "}
+                      <strong className="text-[var(--color-heading)]">
+                        The Trust Gap Spiral
+                      </strong>
+                      . Conflicting advice leads to blind experimentation. Blind
+                      experimentation leads to harm or disappointment. And
+                      careful people — the ones who{" "}
+                      <span className="italic">should</span> be using these
+                      tools — walk away empty-handed.
                     </p>
                     <p>
-                      That pattern is why she built <strong className="text-[var(--color-heading)]">The 3-Layer Safety-First System™</strong> into every entry of this handbook — and why safety flags and "when to stop" signals aren't footnotes. They're the foundation.
+                      That pattern is why she built{" "}
+                      <strong className="text-[var(--color-heading)]">
+                        The 3-Layer Safety-First System™
+                      </strong>{" "}
+                      into every entry of this handbook — and why safety flags
+                      and "when to stop" signals aren't footnotes. They're the
+                      foundation.
                     </p>
                     <div className="pt-4">
                       <p className="font-medium text-[20px] text-[var(--color-heading)] italic">
-                        "The danger was never herbs. It was hype without guardrails. This handbook is 25 years of learning what to warn people about <span className="italic">before</span> they make a mistake."
+                        "The danger was never herbs. It was hype without
+                        guardrails. This handbook is 25 years of learning what
+                        to warn people about{" "}
+                        <span className="italic">before</span> they make a
+                        mistake."
                       </p>
-                      <p className="mt-4 font-bold text-[var(--color-heading)]">— Dr. Elara Vance</p>
+                      <p className="mt-4 font-bold text-[var(--color-heading)]">
+                        — Dr. Elara Vance
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -605,7 +658,9 @@ export default function Index() {
                   title="The 3-Layer Safety-First System™"
                   description={
                     <div className="space-y-3">
-                      <div>Every entry follows the same clinical framework:</div>
+                      <div>
+                        Every entry follows the same clinical framework:
+                      </div>
                       <div className="flex items-center gap-3 text-brand-900/60 font-medium">
                         <span className="h-2 w-2 rounded-full bg-brand-700" />
                         Layer 1: Safe first steps with exact amounts.
@@ -627,7 +682,12 @@ export default function Index() {
                   description={
                     <div className="space-y-3">
                       <div>
-                        "Add some ginger" is not a remedy. <strong className="text-brand-900">1-2 teaspoons fresh grated ginger, steeped at 180°F for 10 minutes</strong> — that's a remedy.
+                        "Add some ginger" is not a remedy.{" "}
+                        <strong className="text-brand-900">
+                          1-2 teaspoons fresh grated ginger, steeped at 180°F
+                          for 10 minutes
+                        </strong>{" "}
+                        — that's a remedy.
                       </div>
                     </div>
                   }
@@ -661,25 +721,40 @@ export default function Index() {
                   clinical precision
                 </div>
                 <h2 className="text-4xl sm:text-[var(--heading-size)] font-bold tracking-tight font-heading leading-[var(--heading-line)] mb-10 text-white">
-                  The Science <br/><span className="text-brand-amber">Behind the Potency.</span>
+                  The Science <br />
+                  <span className="text-brand-amber">Behind the Potency.</span>
                 </h2>
                 <p className="text-[22px] text-white/70 leading-[var(--line)] mb-12 max-w-lg">
-                  Most people see ingredients. We see compounds.
-                  The Honest Herbalist Handbook reveals the exact prep rules that activate the healing power other guides accidentally destroy.
+                  Most people see ingredients. We see compounds. The Honest
+                  Herbalist Handbook reveals the exact prep rules that activate
+                  the healing power other guides accidentally destroy.
                 </p>
                 <div className="space-y-8">
                   {[
-                    { t: "Allicin Activation", d: "Chop garlic. Wait 15 mins. That's the chemical switch." },
-                    { t: "Gingerols vs Shogaols", d: "Boiling destroys one, activates the other. The handbook tells you which you need." },
-                    { t: "Citric Acid Synergy", d: "How lemon acts as a delivery vehicle for heavy-hitting herbs." },
-                  ].map(item => (
+                    {
+                      t: "Allicin Activation",
+                      d: "Chop garlic. Wait 15 mins. That's the chemical switch.",
+                    },
+                    {
+                      t: "Gingerols vs Shogaols",
+                      d: "Boiling destroys one, activates the other. The handbook tells you which you need.",
+                    },
+                    {
+                      t: "Citric Acid Synergy",
+                      d: "How lemon acts as a delivery vehicle for heavy-hitting herbs.",
+                    },
+                  ].map((item) => (
                     <div key={item.t} className="flex gap-5 group">
                       <div className="mt-1 h-8 w-8 shrink-0 rounded-full border border-white/20 flex items-center justify-center text-brand-amber group-hover:bg-brand-amber group-hover:text-brand-900 transition-all duration-300 shadow-inner">
                         <Check className="h-4 w-4" />
                       </div>
                       <div>
-                        <div className="font-bold text-white uppercase tracking-widest text-[20px] mb-2">{item.t}</div>
-                        <div className="text-white/70 text-[20px] leading-[var(--line)]">{item.d}</div>
+                        <div className="font-bold text-white uppercase tracking-widest text-[20px] mb-2">
+                          {item.t}
+                        </div>
+                        <div className="text-white/70 text-[20px] leading-[var(--line)]">
+                          {item.d}
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -736,7 +811,8 @@ export default function Index() {
 
                 <div className="mt-8 p-8 rounded-lg border-l-8 border-brand-700 bg-white shadow-sm">
                   <div className="text-[22px] font-bold text-brand-700 italic">
-                    "The problem isn't herbs. The problem is vague advice pretending to be guidance."
+                    "The problem isn't herbs. The problem is vague advice
+                    pretending to be guidance."
                   </div>
                 </div>
               </div>
@@ -805,7 +881,8 @@ export default function Index() {
 
               <div>
                 <h2 className="text-3xl sm:text-[40px] font-bold tracking-tight font-heading text-[var(--color-heading)] leading-tight mb-8">
-                  Why Self-Reliant Families Trust This Handbook Over Googling, Guessing, or Other Books
+                  Why Self-Reliant Families Trust This Handbook Over Googling,
+                  Guessing, or Other Books
                 </h2>
 
                 <div className="mt-6 space-y-6">
@@ -815,7 +892,9 @@ export default function Index() {
                   />
                   <CheckLine
                     title="Exact Amounts. Exact Timing. Every Entry."
-                    description={"No \"add a little\" or \"drink some tea.\" Every remedy includes teaspoons, grams, drops, steep times, temperatures, and frequencies. This is what makes the difference between \"it didn't work\" and real relief."}
+                    description={
+                      'No "add a little" or "drink some tea." Every remedy includes teaspoons, grams, drops, steep times, temperatures, and frequencies. This is what makes the difference between "it didn\'t work" and real relief.'
+                    }
                   />
                   <CheckLine
                     title="Zero Research Rabbit Holes"
@@ -869,7 +948,9 @@ export default function Index() {
                   <div className="h-14 w-14 rounded-full bg-slate-50 flex items-center justify-center text-brand-700 mb-6">
                     {c.icon}
                   </div>
-                  <div className="mt-3 text-[22px] font-extrabold text-[var(--color-heading)] leading-tight">{c.title}</div>
+                  <div className="mt-3 text-[22px] font-extrabold text-[var(--color-heading)] leading-tight">
+                    {c.title}
+                  </div>
                   <div className="mt-4 text-[20px] leading-[var(--line)] text-[var(--color-muted)]">
                     {c.desc}
                   </div>
@@ -916,7 +997,9 @@ export default function Index() {
                     },
                   ].map((i) => (
                     <div key={i.t} className="rounded-lg bg-white/70 p-6">
-                      <div className="text-[22px] font-extrabold text-red-900">{i.t}</div>
+                      <div className="text-[22px] font-extrabold text-red-900">
+                        {i.t}
+                      </div>
                       <div className="mt-2 text-[20px] leading-[var(--line)] text-[var(--color-muted)]">
                         {i.d}
                       </div>
@@ -953,7 +1036,9 @@ export default function Index() {
                     },
                   ].map((i) => (
                     <div key={i.t} className="rounded-lg bg-white/70 p-6">
-                      <div className="text-[22px] font-extrabold text-brand-700">{i.t}</div>
+                      <div className="text-[22px] font-extrabold text-brand-700">
+                        {i.t}
+                      </div>
                       <div className="mt-2 text-[20px] leading-[var(--line)] text-[var(--color-muted)]">
                         {i.d}
                       </div>
@@ -968,7 +1053,9 @@ export default function Index() {
                 Good News: The guessing ends here.
               </div>
               <div className="mt-4 rounded-xl bg-slate-50 px-8 py-4 text-[18px] font-semibold text-foreground/80 inline-flex items-center max-w-3xl border border-slate-100">
-                The Honest Herbalist Handbook gives you precise measurements, safety flags, and when-to-stop signals that turn uncertainty into confidence — starting with your next remedy.
+                The Honest Herbalist Handbook gives you precise measurements,
+                safety flags, and when-to-stop signals that turn uncertainty
+                into confidence — starting with your next remedy.
               </div>
 
               <div className="mt-6">
@@ -985,7 +1072,9 @@ export default function Index() {
           <div className="container px-4 sm:px-[var(--container-pad)] py-14">
             <SectionTitle
               title="Kitchen Ingredients. Clinical-Grade Guidance."
-              subtitle={"The Honest Herbalist Handbook focuses on ingredients you likely already have — with the exact methods that turn \"I tried it and nothing happened\" into \"Oh, that's how you do it.\""}
+              subtitle={
+                'The Honest Herbalist Handbook focuses on ingredients you likely already have — with the exact methods that turn "I tried it and nothing happened" into "Oh, that\'s how you do it."'
+              }
             />
 
             <div className="mt-10 grid gap-6 md:grid-cols-3">
@@ -993,32 +1082,38 @@ export default function Index() {
                 {
                   title: "Honey",
                   desc: "Real healing power — if you know the age limits and temperature rules most guides skip. Never heat above 95°F. Never give to babies under 12 months.",
-                  image: "https://cdn.builder.io/api/v1/image/assets%2Fbedb2949a0a643deba81c521622c60b2%2F490fa48c38bc4cceb6ff69d80107610a?format=webp&width=800&height=1200",
+                  image:
+                    "https://cdn.builder.io/api/v1/image/assets%2Fbedb2949a0a643deba81c521622c60b2%2F490fa48c38bc4cceb6ff69d80107610a?format=webp&width=800&height=1200",
                 },
                 {
                   title: "Garlic",
                   desc: "The 10-15 minute waiting period that activates garlic's healing compound. Chop it, then wait.",
-                  image: "https://cdn.builder.io/api/v1/image/assets%2Fbedb2949a0a643deba81c521622c60b2%2Fc7b0691cd2ac40cc90c2cec6f0840216?format=webp&width=800&height=1200",
+                  image:
+                    "https://cdn.builder.io/api/v1/image/assets%2Fbedb2949a0a643deba81c521622c60b2%2Fc7b0691cd2ac40cc90c2cec6f0840216?format=webp&width=800&height=1200",
                 },
                 {
                   title: "Ginger",
                   desc: "The temperature range (below boiling) that preserves what matters. Most people destroy the active compounds by boiling.",
-                  image: "https://cdn.builder.io/api/v1/image/assets%2Fbedb2949a0a643deba81c521622c60b2%2F9f68cfee6e76467fad2961f9ccf68d4f?format=webp&width=800&height=1200",
+                  image:
+                    "https://cdn.builder.io/api/v1/image/assets%2Fbedb2949a0a643deba81c521622c60b2%2F9f68cfee6e76467fad2961f9ccf68d4f?format=webp&width=800&height=1200",
                 },
                 {
                   title: "Chamomile",
                   desc: "The 30-minute timing window for sleep — drink too early and it wears off, too late and you're up all night. Steep time and amount matter too.",
-                  image: "https://cdn.builder.io/api/v1/image/assets%2Fbedb2949a0a643deba81c521622c60b2%2F1f8167182d7a48cb97b292cc61823acf?format=webp&width=800&height=1200",
+                  image:
+                    "https://cdn.builder.io/api/v1/image/assets%2Fbedb2949a0a643deba81c521622c60b2%2F1f8167182d7a48cb97b292cc61823acf?format=webp&width=800&height=1200",
                 },
                 {
                   title: "Peppermint",
                   desc: "Great for digestion — but with hidden cautions for reflux, hiatal hernia, and certain medications. The safety flag could save you trouble.",
-                  image: "https://cdn.builder.io/api/v1/image/assets%2Fbedb2949a0a643deba81c521622c60b2%2Fe000e3a2bb7d4d889ba5f47b389059ac?format=webp&width=800&height=1200",
+                  image:
+                    "https://cdn.builder.io/api/v1/image/assets%2Fbedb2949a0a643deba81c521622c60b2%2Fe000e3a2bb7d4d889ba5f47b389059ac?format=webp&width=800&height=1200",
                 },
                 {
                   title: "Lemon",
                   desc: "Simple remedies for digestion and immune support — but only when combined correctly. Temperature and timing matter.",
-                  image: "https://cdn.builder.io/api/v1/image/assets%2Fbedb2949a0a643deba81c521622c60b2%2F7808d2b4781e484fb199fe927513d13e?format=webp&width=800&height=1200",
+                  image:
+                    "https://cdn.builder.io/api/v1/image/assets%2Fbedb2949a0a643deba81c521622c60b2%2F7808d2b4781e484fb199fe927513d13e?format=webp&width=800&height=1200",
                 },
               ].map((i) => (
                 <div
@@ -1033,7 +1128,9 @@ export default function Index() {
                     />
                   </div>
                   <div className="p-8">
-                    <div className="text-[20px] sm:text-[22px] font-extrabold text-[var(--color-heading)] uppercase tracking-wider">{i.title}</div>
+                    <div className="text-[20px] sm:text-[22px] font-extrabold text-[var(--color-heading)] uppercase tracking-wider">
+                      {i.title}
+                    </div>
                     <div className="mt-4 text-[18px] sm:text-[20px] leading-[var(--line)] text-[var(--color-muted)]">
                       {i.desc}
                     </div>
@@ -1058,7 +1155,10 @@ export default function Index() {
         {/* Testimonials */}
         <section className="bg-[#fcfdfc] py-[var(--reviews-pad-y)] border-t border-slate-100">
           <div className="container px-4 sm:px-[var(--container-pad)]">
-            <SectionTitle title="Real People. Real Relief." subtitle="Join 12,000+ families who've stopped guessing and started using clinical-grade herbal guidance." />
+            <SectionTitle
+              title="Real People. Real Relief."
+              subtitle="Join 12,000+ families who've stopped guessing and started using clinical-grade herbal guidance."
+            />
 
             <div className="mt-16 relative px-4 sm:px-12">
               <Carousel
@@ -1074,31 +1174,36 @@ export default function Index() {
                       quote:
                         '"Finally — a book that tells me HOW MUCH."\n"I\'ve bought three herbal books over the years. Pretty pictures, nice stories, zero practical use. This one has measurements. Steep times. Warnings. It\'s the only one that stays in my kitchen instead of on a shelf."',
                       name: "Rachel M., 54 — Texas",
-                      image: "https://cdn.builder.io/api/v1/image/assets%2Fbedb2949a0a643deba81c521622c60b2%2F81d96098694d49058ebd27e26c1530d2?format=webp&width=800&height=1200",
+                      image:
+                        "https://cdn.builder.io/api/v1/image/assets%2Fbedb2949a0a643deba81c521622c60b2%2F81d96098694d49058ebd27e26c1530d2?format=webp&width=800&height=1200",
                     },
                     {
                       quote:
                         '"I gave my elderly mom the wrong herb. Never again."\n"I didn\'t know St. John\'s Wort could clash with her heart medication. Nobody told me. I found out the hard way. This handbook flags that on every single page. I wish I\'d had it sooner."',
                       name: "Denise K., 61 — Ohio",
-                      image: "https://cdn.builder.io/api/v1/image/assets%2Fbedb2949a0a643deba81c521622c60b2%2Fa1a8c7dcc80f4b2b91779de93bc5604a?format=webp&width=800&height=1200",
+                      image:
+                        "https://cdn.builder.io/api/v1/image/assets%2Fbedb2949a0a643deba81c521622c60b2%2Fa1a8c7dcc80f4b2b91779de93bc5604a?format=webp&width=800&height=1200",
                     },
                     {
                       quote:
-                        '"This is what I grab at 2 AM."\n"When my son\'s coughing and I\'m half-asleep, I\'m not Googling. I\'m not scrolling through blogs. I flip to \'respiratory\' and get a clear answer in 30 seconds. That\'s worth way more than $49."',
+                        "\"This is what I grab at 2 AM.\"\n\"When my son's coughing and I'm half-asleep, I'm not Googling. I'm not scrolling through blogs. I flip to 'respiratory' and get a clear answer in 30 seconds. That's worth way more than $49.\"",
                       name: "Amanda T., 47 — Montana",
-                      image: "https://cdn.builder.io/api/v1/image/assets%2Fbedb2949a0a643deba81c521622c60b2%2Fd54a6730f12144a6bc27eddd161f38ef?format=webp&width=800&height=1200",
+                      image:
+                        "https://cdn.builder.io/api/v1/image/assets%2Fbedb2949a0a643deba81c521622c60b2%2Fd54a6730f12144a6bc27eddd161f38ef?format=webp&width=800&height=1200",
                     },
                     {
                       quote:
                         '"The precision is what sold me."\n"I always worried about safety flags for my grandkids. This handbook makes it so clear. No more guessing if something is safe for a 6-year-old or an 80-year-old."',
                       name: "Susan L., 66 — Oregon",
-                      image: "https://cdn.builder.io/api/v1/image/assets%2Fbedb2949a0a643deba81c521622c60b2%2Feb6aabdb1f0a41d4b1608fb83089395c?format=webp&width=800&height=1200",
+                      image:
+                        "https://cdn.builder.io/api/v1/image/assets%2Fbedb2949a0a643deba81c521622c60b2%2Feb6aabdb1f0a41d4b1608fb83089395c?format=webp&width=800&height=1200",
                     },
                   ].map((t, idx) => (
-                    <CarouselItem key={idx} className="pl-4 md:basis-1/2 lg:basis-1/3">
-                      <div
-                        className="h-full rounded-[var(--reviews-card-radius)] border border-[#E0E0E0] bg-[var(--reviews-card-bg)] p-0 overflow-hidden shadow-soft hover:shadow-card transition-shadow duration-300 flex flex-col"
-                      >
+                    <CarouselItem
+                      key={idx}
+                      className="pl-4 md:basis-1/2 lg:basis-1/3"
+                    >
+                      <div className="h-full rounded-[var(--reviews-card-radius)] border border-[#E0E0E0] bg-[var(--reviews-card-bg)] p-0 overflow-hidden shadow-soft hover:shadow-card transition-shadow duration-300 flex flex-col">
                         {t.image && (
                           <div className="aspect-[3/4] w-full overflow-hidden border-b border-border">
                             <img
@@ -1111,10 +1216,7 @@ export default function Index() {
                         <div className="p-8 flex flex-col flex-1">
                           <div className="flex items-center gap-1 text-brand-amber mb-6">
                             {Array.from({ length: 5 }).map((_, i) => (
-                              <Star
-                                key={i}
-                                className="h-5 w-5 fill-current"
-                              />
+                              <Star key={i} className="h-5 w-5 fill-current" />
                             ))}
                           </div>
                           <div className="text-[18px] leading-relaxed text-[var(--reviews-text-color)] italic mb-8 whitespace-pre-line flex-1">
@@ -1123,12 +1225,17 @@ export default function Index() {
                           <div className="flex items-center gap-4 border-t border-border pt-6 mt-auto">
                             <div className="h-10 w-10 rounded-full bg-white border border-border flex items-center justify-center text-brand-700 font-bold text-xs shadow-sm overflow-hidden">
                               {t.image ? (
-                                <img src={t.image} className="w-full h-full object-cover" />
+                                <img
+                                  src={t.image}
+                                  className="w-full h-full object-cover"
+                                />
                               ) : (
                                 t.name.charAt(0)
                               )}
                             </div>
-                            <div className="text-[16px] font-bold text-brand-900 uppercase tracking-tight">{t.name}</div>
+                            <div className="text-[16px] font-bold text-brand-900 uppercase tracking-tight">
+                              {t.name}
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -1151,7 +1258,10 @@ export default function Index() {
         </section>
 
         {/* Offer */}
-        <section id="offer" className="bg-white border-t border-slate-100 relative overflow-hidden">
+        <section
+          id="offer"
+          className="bg-white border-t border-slate-100 relative overflow-hidden"
+        >
           <div className="container px-4 sm:px-[var(--container-pad)] py-20 lg:py-32">
             <SectionTitle
               title="Ready to Finally Stop Guessing With Your Loved Ones' Health?"
@@ -1161,38 +1271,49 @@ export default function Index() {
             <div className="mt-16 flex justify-center">
               <div className="w-full max-w-[680px] rounded-2xl border-2 border-dashed border-brand-700 bg-white shadow-2xl overflow-hidden p-2">
                 <div className="rounded-xl border border-border bg-white overflow-hidden">
-          <div className="bg-brand-700 px-6 py-4 text-center text-white">
-                    <div className="text-[10px] font-extrabold tracking-[0.2em] uppercase mb-1 text-white/80">limited time offer</div>
-                    <div className="text-xl sm:text-2xl font-bold font-heading tracking-tight">SAVE 61% TODAY</div>
+                  <div className="bg-brand-700 px-6 py-4 text-center text-white">
+                    <div className="text-[10px] font-extrabold tracking-[0.2em] uppercase mb-1 text-white/80">
+                      limited time offer
+                    </div>
+                    <div className="text-xl sm:text-2xl font-bold font-heading tracking-tight">
+                      SAVE 61% TODAY
+                    </div>
                   </div>
 
                   <div className="p-6 sm:p-10 pb-6">
                     <div className="grid sm:grid-cols-[200px_1fr] gap-8 items-start mb-10">
                       <div className="relative transform -rotate-2">
-                      <div className="relative z-20 shadow-xl rounded-2xl overflow-hidden">
-                        <img
-                          src="https://cdn.builder.io/api/v1/image/assets%2Fbedb2949a0a643deba81c521622c60b2%2Fb1922dfa8c004d0e83eebc23dec664a4?format=webp&width=800&height=1200"
-                          alt="The Honest Herbalist Handbook Bundle"
-                          className="aspect-[2/3] w-full"
-                        />
+                        <div className="relative z-20 shadow-xl rounded-2xl overflow-hidden">
+                          <img
+                            src="https://cdn.builder.io/api/v1/image/assets%2Fbedb2949a0a643deba81c521622c60b2%2Fb1922dfa8c004d0e83eebc23dec664a4?format=webp&width=800&height=1200"
+                            alt="The Honest Herbalist Handbook Bundle"
+                            className="aspect-[2/3] w-full"
+                          />
+                        </div>
+                        <div className="absolute -bottom-4 -right-4 bg-brand-amber text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-lg z-30">
+                          MOST POPULAR
+                        </div>
                       </div>
-                      <div className="absolute -bottom-4 -right-4 bg-brand-amber text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-lg z-30">
-                        MOST POPULAR
-                      </div>
-                    </div>
 
                       <div className="flex flex-col">
                         <div className="text-[22px] font-bold font-heading text-[var(--color-heading)] mb-2">
                           The Honest Herbalist Handbook Bundle
                         </div>
                         <div className="text-[18px] text-[var(--color-muted)] leading-[var(--line)] mb-4">
-                          Get access to the clinical reference guide plus digital access to all 3 life-saving bonus resources.
+                          Get access to the clinical reference guide plus
+                          digital access to all 3 life-saving bonus resources.
                         </div>
                         <div className="flex items-center gap-3">
-                          <div className="text-3xl sm:text-[40px] font-extrabold text-[var(--color-heading)]">$49</div>
+                          <div className="text-3xl sm:text-[40px] font-extrabold text-[var(--color-heading)]">
+                            $49
+                          </div>
                           <div className="flex flex-col">
-                            <div className="text-[16px] text-[var(--color-muted)] line-through">$127.00</div>
-                            <div className="text-[14px] font-bold text-brand-700 uppercase tracking-wide">Save $78.00</div>
+                            <div className="text-[16px] text-[var(--color-muted)] line-through">
+                              $127.00
+                            </div>
+                            <div className="text-[14px] font-bold text-brand-700 uppercase tracking-wide">
+                              Save $78.00
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -1225,16 +1346,25 @@ export default function Index() {
                           desc: "The 12 essential herbs to build your clinical kitchen pharmacy.",
                         },
                       ].map((item) => (
-                        <div key={item.title} className="flex gap-4 items-start group">
+                        <div
+                          key={item.title}
+                          className="flex gap-4 items-start group"
+                        >
                           <div className="mt-1 h-6 w-6 shrink-0 rounded-full bg-slate-50 flex items-center justify-center text-brand-700 group-hover:bg-brand-700 group-hover:text-white transition-colors">
                             <Check className="h-3.5 w-3.5" />
                           </div>
                           <div className="flex-1">
                             <div className="flex items-center justify-between">
-                              <div className="text-[18px] font-bold text-[var(--color-text)]">{item.title}</div>
-                              <div className="text-[16px] font-medium text-[var(--color-muted)] italic">{item.value} Value</div>
+                              <div className="text-[18px] font-bold text-[var(--color-text)]">
+                                {item.title}
+                              </div>
+                              <div className="text-[16px] font-medium text-[var(--color-muted)] italic">
+                                {item.value} Value
+                              </div>
                             </div>
-                            <div className="text-[16px] text-[var(--color-muted)] mt-0.5">{item.desc}</div>
+                            <div className="text-[16px] text-[var(--color-muted)] mt-0.5">
+                              {item.desc}
+                            </div>
                           </div>
                         </div>
                       ))}
@@ -1250,7 +1380,9 @@ export default function Index() {
                       </a>
 
                       <div className="flex flex-col items-center gap-6">
-                        <div className="text-[16px] text-muted-foreground uppercase tracking-[0.2em] font-bold">Secure checkout</div>
+                        <div className="text-[16px] text-muted-foreground uppercase tracking-[0.2em] font-bold">
+                          Secure checkout
+                        </div>
                         <div className="max-w-[500px] w-full px-4 opacity-90 hover:opacity-100 transition-opacity">
                           <img
                             src="https://cdn.builder.io/api/v1/image/assets%2Fbedb2949a0a643deba81c521622c60b2%2F8651bc8558944e8fb633172962914acb?format=webp&width=800&height=1200"
@@ -1289,16 +1421,20 @@ export default function Index() {
                     60-Day Money-Back Guarantee — No Questions Asked
                   </h2>
                   <p className="mt-2 text-[18px] leading-[var(--line)] text-[var(--color-muted)]">
-                    We believe in this handbook — and we believe you should try it risk-free.
-                    Print it out. Put it in your kitchen. Use it the next time someone in your family isn't feeling well.
-                    If it doesn't become the first thing you reach for — if it doesn't make you feel more confident and less reliant on late-night Googling — just let us know within 60 days.
-                    We'll refund every penny. No hoops. No hassle.
-                    Just guidance that works — or your money back.
+                    We believe in this handbook — and we believe you should try
+                    it risk-free. Print it out. Put it in your kitchen. Use it
+                    the next time someone in your family isn't feeling well. If
+                    it doesn't become the first thing you reach for — if it
+                    doesn't make you feel more confident and less reliant on
+                    late-night Googling — just let us know within 60 days. We'll
+                    refund every penny. No hoops. No hassle. Just guidance that
+                    works — or your money back.
                   </p>
                   <p className="mt-4 text-[18px] leading-[var(--line)] text-[var(--color-muted)]">
-                    "I've spent 25 years building trust with patients one person at a time. If this handbook doesn't help you, I don't want your money."
-                    <br />
-                    — Dr. Elara Vance
+                    "I've spent 25 years building trust with patients one person
+                    at a time. If this handbook doesn't help you, I don't want
+                    your money."
+                    <br />— Dr. Elara Vance
                   </p>
                 </div>
               </div>
@@ -1341,16 +1477,25 @@ export default function Index() {
               </h2>
               <div className="mt-4 space-y-2 text-[18px] text-[var(--color-muted)]">
                 <div>You don't need to "just wing it."</div>
-                <div>You don't need another Pinterest board with pretty pictures.</div>
-                <div>You don't need that knot in your stomach when you're not sure about the amount.</div>
+                <div>
+                  You don't need another Pinterest board with pretty pictures.
+                </div>
+                <div>
+                  You don't need that knot in your stomach when you're not sure
+                  about the amount.
+                </div>
                 <div>You need a reference you can trust.</div>
               </div>
               <p className="mt-6 text-[18px] leading-[var(--line)] text-[var(--color-muted)]">
-                Join the families who've stopped guessing and started using precise, safety-first herbal guidance — from a clinical herbalist with 25 years of patient care.
+                Join the families who've stopped guessing and started using
+                precise, safety-first herbal guidance — from a clinical
+                herbalist with 25 years of patient care.
               </p>
 
               <div className="mt-8">
-                <div className="text-[24px] font-extrabold text-[var(--color-heading)]">Ready to Stop Guessing?</div>
+                <div className="text-[24px] font-extrabold text-[var(--color-heading)]">
+                  Ready to Stop Guessing?
+                </div>
                 <div className="mt-4">
                   <a
                     href={checkoutUrl}
@@ -1368,7 +1513,11 @@ export default function Index() {
               </div>
 
               <p className="mt-10 text-[12px] leading-relaxed text-muted-foreground">
-                Disclaimer: This handbook is for educational purposes only. It is not intended to diagnose, treat, cure, or prevent any disease. Always consult a qualified healthcare provider before starting any new health regimen, especially if you are pregnant, nursing, taking medications, or have a medical condition.
+                Disclaimer: This handbook is for educational purposes only. It
+                is not intended to diagnose, treat, cure, or prevent any
+                disease. Always consult a qualified healthcare provider before
+                starting any new health regimen, especially if you are pregnant,
+                nursing, taking medications, or have a medical condition.
               </p>
             </div>
           </div>
@@ -1383,7 +1532,8 @@ export default function Index() {
                 Thank you!
               </DialogTitle>
               <DialogDescription className="text-[15px] text-[var(--color-muted)]">
-                We've received your interest and we will email you with instructions how to purchase.
+                We've received your interest and we will email you with
+                instructions how to purchase.
               </DialogDescription>
             </DialogHeader>
           ) : (

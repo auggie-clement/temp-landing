@@ -54,25 +54,25 @@ export default function ThankYou() {
     try {
       if (typeof window !== "undefined" && window.sessionStorage) {
         const alreadyTracked =
-          window.sessionStorage.getItem(storageKey) === "1";
+          window.sessionStorage.getItem(storageKey) === sessionId;
         if (alreadyTracked) return;
       }
     } catch {
       // If storage isn't available, still attempt to track once.
     }
 
-    if (typeof window !== "undefined" && typeof window.fbq === "function") {
+    if (typeof window !== "undefined") {
       // Required by user:
       // fbq('track', 'Purchase', { value: 12.00, currency: 'USD' }, { eventID: 'your-id' });
-      window.fbq(
+      fbq(
         "track",
         "Purchase",
-        { value: PURCHASE_VALUE, currency: PURCHASE_CURRENCY },
-        { eventID: eventId },
+        { value: 49.0, currency: "USD" },
+        { eventID: sessionId },
       );
 
       try {
-        window.sessionStorage?.setItem(storageKey, "1");
+        window.sessionStorage?.setItem(storageKey, sessionId);
       } catch {
         // ignore
       }
@@ -152,4 +152,12 @@ export default function ThankYou() {
       </div>
     </main>
   );
+}
+function fbq(
+  arg0: string,
+  arg1: string,
+  arg2: { value: number; currency: string },
+  arg3: { eventID: any },
+) {
+  throw new Error("Function not implemented.");
 }
