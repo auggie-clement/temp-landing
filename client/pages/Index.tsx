@@ -383,6 +383,9 @@ export default function Index() {
     (event: MouseEvent<HTMLAnchorElement>) => {
       event.preventDefault();
       trackInitiateCheckout({ value: 49.0, currency: "USD", num_items: 1 });
+      window.setTimeout(() => {
+        window.location.href = checkoutUrl;
+      }, 200);
     },
     [checkoutUrl],
   );

@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
+import { trackPurchase } from "@/lib/metaPixel";
 
 /**
  * Notes:
@@ -9,13 +10,7 @@ import { Link, useSearchParams } from "react-router-dom";
  *   as the eventID for deduplication.
  */
 
-declare global {
-  interface Window {
-    fbq?: (...args: any[]) => void;
-  }
-}
-
-const PURCHASE_VALUE = 12.0;
+const PURCHASE_VALUE = 49.0;
 const PURCHASE_CURRENCY = "USD";
 
 function getFirstParam(
@@ -61,26 +56,16 @@ export default function ThankYou() {
       // If storage isn't available, still attempt to track once.
     }
 
-    if (typeof window !== "undefined") {
-      // Required by user:
-      // fbq('track', 'Purchase', { value: 12.00, currency: 'USD' }, { eventID: 'your-id' });
-      fbq(
-        "track",
-        "Purchase",
-        { value: 49.0, currency: "USD" },
-        { eventID: sessionId },
-      );
+    trackPurchase({
+      value: PURCHASE_VALUE,
+      currency: PURCHASE_CURRENCY,
+      eventID: sessionId,
+    });
 
-      try {
-        window.sessionStorage?.setItem(storageKey, sessionId);
-      } catch {
-        // ignore
-      }
-    } else {
-      // If fbq isn't available, you either:
-      // - haven't installed the Meta Pixel base code yet, or
-      // - the pixel script hasn't loaded by the time this runs.
-      // You can optionally retry or log; keeping it silent here.
+    try {
+      window.sessionStorage?.setItem(storageKey, sessionId);
+    } catch {
+      // ignore
     }
   }, [sessionId]);
 
@@ -152,12 +137,4 @@ export default function ThankYou() {
       </div>
     </main>
   );
-}
-function fbq(
-  arg0: string,
-  arg1: string,
-  arg2: { value: number; currency: string },
-  arg3: { eventID: any },
-) {
-  throw new Error("Function not implemented.");
 }

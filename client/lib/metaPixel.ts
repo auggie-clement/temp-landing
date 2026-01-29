@@ -1,29 +1,29 @@
-// Meta Pixel helpers for a React SPA.
+// Meta Pixel helpers for a React SPA, backed by react-facebook-pixel.
 //
-// Assumptions:
-// - The Meta Pixel base snippet is already present in index.html and calls:
-//     fbq('init', '<PIXEL_ID>');
-//     fbq('track', 'PageView');
-//
-// This module adds safe wrappers for:
+// This module provides safe wrappers for:
 // - PageView (for SPA route changes)
 // - InitiateCheckout (when user clicks your Stripe Payment Link)
 // - Purchase (on thank-you page after successful payment)
 //
-// Docs:
-// - Standard events: https://www.facebook.com/business/help/402791146561655
-// - Pixel reference: https://developers.facebook.com/docs/meta-pixel/reference
+// The Pixel base script is injected by react-facebook-pixel.
+// If you previously had the base snippet in index.html, remove it to avoid
+// duplicate PageView events on initial load.
 
-declare global {
-  interface Window {
-    fbq?: (...args: any[]) => void;
-  }
-}
+import ReactPixel from "react-facebook-pixel";
+
+const PIXEL_ID = "1413128283786699";
+let isInitialized = false;
 
 export type CurrencyCode = string;
 
-export function hasFbq(): boolean {
-  return typeof window !== "undefined" && typeof window.fbq === "function";
+function canUsePixel(): boolean {
+  return typeof window !== "undefined";
+}
+
+export function initMetaPixel(): void {
+  if (!canUsePixel() || isInitialized) return;
+  ReactPixel.init(PIXEL_ID);
+  isInitialized = true;
 }
 
 /**
@@ -33,25 +33,28 @@ export function hasFbq(): boolean {
 export function track(
   eventName: string,
   params?: Record<string, any>,
-  options?: Record<string, any>
+  options?: Record<string, any>,
 ): void {
-  if (!hasFbq()) return;
+  if (!canUsePixel()) return;
+  if (!isInitialized) initMetaPixel();
 
   if (options) {
-    window.fbq!("track", eventName, params ?? {}, options);
+    ReactPixel.fbq("track", eventName, params ?? {}, options);
     return;
   }
 
   if (params) {
-    window.fbq!("track", eventName, params);
+    ReactPixel.track(eventName, params);
     return;
   }
 
-  window.fbq!("track", eventName);
+  ReactPixel.track(eventName);
 }
 
 export function trackPageView(): void {
-  track("PageView");
+  if (!canUsePixel()) return;
+  if (!isInitialized) initMetaPixel();
+  ReactPixel.pageView();
 }
 
 export type InitiateCheckoutParams = {
