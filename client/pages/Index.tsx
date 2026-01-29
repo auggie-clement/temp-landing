@@ -382,10 +382,14 @@ export default function Index() {
   const handleStripeCheckoutClick = useCallback(
     (event: MouseEvent<HTMLAnchorElement>) => {
       event.preventDefault();
-      trackInitiateCheckout({ value: 49.0, currency: "USD", num_items: 1 });
+      try {
+        trackInitiateCheckout({ value: 49.0, currency: "USD", num_items: 1 });
+      } catch {
+        // Ignore tracking errors to ensure navigation still happens.
+      }
       window.setTimeout(() => {
         window.location.href = checkoutUrl;
-      }, 200);
+      }, 150);
     },
     [checkoutUrl],
   );
