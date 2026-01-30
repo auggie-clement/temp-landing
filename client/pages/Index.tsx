@@ -788,7 +788,7 @@ export default function Index() {
               <div className="relative">
                 <div className="relative z-20 shadow-2xl rounded-3xl overflow-hidden">
                   <img
-                    src="https://cdn.builder.io/api/v1/image/assets%2Fbedb2949a0a643deba81c521622c60b2%2Fa0de9b8012784e25a4df15e8f68a4e1a?format=webp&width=800&height=1200"
+                    src="/images/peppermint_tea.jpg"
                     alt="Peppermint Tea clinical guidance page"
                     className="aspect-[2/3] w-full object-cover"
                   />
@@ -830,42 +830,30 @@ export default function Index() {
         {/* Solution section */}
         <section className="bg-white border-t border-slate-100">
           <div className="container px-4 sm:px-6 py-20 lg:py-32">
-            <div className="grid gap-16 lg:grid-cols-2 lg:items-center">
-              <div className="order-2 lg:order-1">
-                <SectionTitle
-                  title="The Safety-First Handbook That Finally Tells You the Truth"
-                  subtitle="Tired of vague advice? This isn't an encyclopedia. It's a field manual for when someone's coughing at midnight and you need to know fast."
+            <div className="mx-auto max-w-6xl rounded-2xl bg-brand-50 border border-brand-200 p-8 sm:p-12">
+              <SectionTitle
+                title="The Safety-First Handbook That Finally Tells You the Truth"
+                subtitle="Tired of vague advice? This isn't an encyclopedia. It's a field manual for when someone's coughing at midnight and you need to know fast."
+              />
+
+              <div className="mt-10 space-y-6">
+                <CheckLine
+                  title="The Credibility Test Most Guides Fail"
+                  description="If it doesn't include amounts, it can't tell you anything useful. Would you trust a medication that said 'take a couple pills whenever'?"
+                />
+                <CheckLine
+                  title="No Gadgets. No Guessing."
+                  description="These step-by-step remedies use what you already have: ginger, chamomile, honey, garlic, peppermint. Kitchen staples. Nothing exotic."
+                />
+                <CheckLine
+                  title="Symptom-Indexed"
+                  description="Don't hunt through chapters organized by plant name. Flip to what's wrong and get your answer on one page."
                 />
 
-                <div className="mt-10 space-y-6">
-                  <CheckLine
-                    title="The Credibility Test Most Guides Fail"
-                    description="If it doesn't include amounts, it can't tell you anything useful. Would you trust a medication that said 'take a couple pills whenever'?"
-                  />
-                  <CheckLine
-                    title="No Gadgets. No Guessing."
-                    description="These step-by-step remedies use what you already have: ginger, chamomile, honey, garlic, peppermint. Kitchen staples. Nothing exotic."
-                  />
-                  <CheckLine
-                    title="Symptom-Indexed"
-                    description="Don't hunt through chapters organized by plant name. Flip to what's wrong and get your answer on one page."
-                  />
-
-                  <div className="pt-6 flex justify-center lg:justify-start">
-                    <PrimaryCTA onClick={scrollToOffer}>
-                      GET THE HANDBOOK TODAY →
-                    </PrimaryCTA>
-                  </div>
-                </div>
-              </div>
-
-              <div className="order-1 lg:order-2 relative">
-                <div className="relative z-20 shadow-2xl rounded-3xl overflow-hidden">
-                  <img
-                    src="https://cdn.builder.io/api/v1/image/assets%2Fbedb2949a0a643deba81c521622c60b2%2Fd3cbbb906f534c1ea310b43430d81410?format=webp&width=800&height=1200"
-                    alt="The Honest Herbalist Handbook Quick Find Page"
-                    className="aspect-[2/3] w-full object-cover"
-                  />
+                <div className="pt-6 flex justify-center lg:justify-start">
+                  <PrimaryCTA onClick={scrollToOffer}>
+                    GET THE HANDBOOK TODAY →
+                  </PrimaryCTA>
                 </div>
               </div>
             </div>
@@ -1211,15 +1199,6 @@ export default function Index() {
                       className="pl-4 md:basis-1/2 lg:basis-1/3"
                     >
                       <div className="h-full rounded-[var(--reviews-card-radius)] border border-[#E0E0E0] bg-[var(--reviews-card-bg)] p-0 overflow-hidden shadow-soft hover:shadow-card transition-shadow duration-300 flex flex-col">
-                        {t.image && (
-                          <div className="aspect-[3/4] w-full overflow-hidden border-b border-border">
-                            <img
-                              src={t.image}
-                              alt={t.name}
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                        )}
                         <div className="p-8 flex flex-col flex-1">
                           <div className="flex items-center gap-1 text-brand-amber mb-6">
                             {Array.from({ length: 5 }).map((_, i) => (
